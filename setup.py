@@ -61,6 +61,7 @@ setup(name = "sos-javascript",
     entry_points= '''
 [sos_languages]
 JavaScript = sos_javascript.kernel:sos_JavaScript
+TypeScript = sos_javascript.kernel:sos_JavaScript
 '''
 )
 
