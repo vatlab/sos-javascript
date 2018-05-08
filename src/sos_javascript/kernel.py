@@ -65,6 +65,7 @@ class sos_JavaScript:
     supported_kernels = {'JavaScript': ['javascript', 'nodejs'], 'TypeScript': ['typescript']}
     background_color = {'JavaScript': '#c8e1ae', 'TypeScript': '#56A6DC'}
     options = {}
+    cd_command = 'process.chdir({dir!r})'
 
     def __init__(self, sos_kernel, kernel_name='javascript'):
         self.sos_kernel = sos_kernel
