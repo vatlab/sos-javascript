@@ -114,7 +114,7 @@ recursive_var = {'a': {'b': 123}, 'c': True}
         with sos_kernel() as kc:
             iopub = kc.iopub_channel
             # create a data frame
-            execute(kc=kc, code='''
+            execute(kc=kc, code='''\
 %use JavaScript
 null_var = null
 num_var = 123
@@ -128,7 +128,7 @@ named_list_var = {a:1, b:2, c:3}
 recursive_var = {a:1, b: {c:3, d:'whatever'}}
 ''')
             wait_for_idle(kc)
-            execute(kc=kc, code="""
+            execute(kc=kc, code="""\
 %put null_var num_var num_arr_var logic_var logic_arr_var char_var char_arr_var list_var named_list_var recursive_var
 %dict null_var num_var num_arr_var logic_var logic_arr_var char_var char_arr_var list_var named_list_var recursive_var
 """)
