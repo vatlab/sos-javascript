@@ -49,7 +49,7 @@ before_install:
 sudo: required
 services:
     - docker
-install: "python setup.py install"
+install: "pip install . -U"
 before_script:
     - cd test
 script:
