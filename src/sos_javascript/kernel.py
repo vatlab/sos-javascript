@@ -20,6 +20,7 @@ __get_sos_vars = function() {
 
 '''
 
+
 #
 #  support for %get
 #
@@ -41,11 +42,15 @@ def _JS_repr(obj):
         elif isinstance(obj, set):
             return json.dumps(list(obj))
         else:
-            return 'Unsupported seralizable data {} with type {}'.format(short_repr(obj), obj.__class__.__name__)
+            return 'Unsupported seralizable data {} with type {}'.format(
+                short_repr(obj), obj.__class__.__name__)
 
 
 class sos_JavaScript:
-    supported_kernels = {'JavaScript': ['javascript', 'nodejs'], 'TypeScript': ['typescript']}
+    supported_kernels = {
+        'JavaScript': ['javascript', 'nodejs'],
+        'TypeScript': ['typescript']
+    }
     background_color = {'JavaScript': '#c8e1ae', 'TypeScript': '#56A6DC'}
     options = {}
     cd_command = 'process.chdir({dir!r})'
@@ -57,22 +62,28 @@ class sos_JavaScript:
 
     def get_vars(self, names):
         for name in names:
-            self.sos_kernel.run_cell('{} = {}'.format(name, _JS_repr(env.sos_dict[name])), True, False)
+            self.sos_kernel.run_cell(
+                '{} = {}'.format(name, _JS_repr(env.sos_dict[name])), True,
+                False)
 
     def put_vars(self, items, to_kernel=None):
         # first let us get all variables with names starting with sos
-        response = self.sos_kernel.get_response('__get_sos_vars()', ('execute_result'))[0][1]
+        response = self.sos_kernel.get_response('__get_sos_vars()',
+                                                ('execute_result'))[0][1]
         expr = response['data']['text/plain']
         items += eval(expr)
 
         if not items:
             return {}
 
-        py_repr = 'JSON.stringify({{ {} }})'.format(','.join('"{0}":{0}'.format(x) for x in items))
-        response = self.sos_kernel.get_response(py_repr, ('execute_result'))[0][1]
+        py_repr = 'JSON.stringify({{ {} }})'.format(','.join(
+            '"{0}":{0}'.format(x) for x in items))
+        response = self.sos_kernel.get_response(py_repr,
+                                                ('execute_result'))[0][1]
         expr = response['data']['text/plain']
         try:
             return json.loads(eval(expr))
         except Exception as e:
-            self.sos_kernel.warn('Failed to convert {} to Python object: {}'.format(expr, e))
+            self.sos_kernel.warn(
+                'Failed to convert {} to Python object: {}'.format(expr, e))
             return {}
