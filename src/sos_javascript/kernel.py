@@ -7,17 +7,6 @@ from sos.utils import short_repr, env
 import json
 
 JS_init_statement = '''
-__get_sos_vars = function() {
-    vars = []
-    for(v in this) {
-        if (typeof v.startsWith === "function" && v.startsWith('sos') )
-        {
-            vars.push(v);
-        }
-    }
-    return vars;
-}
-
 '''
 
 
@@ -68,11 +57,6 @@ class sos_JavaScript:
 
     def put_vars(self, items, to_kernel=None):
         # first let us get all variables with names starting with sos
-        response = self.sos_kernel.get_response('__get_sos_vars()',
-                                                ('execute_result'))[0][1]
-        expr = response['data']['text/plain']
-        items += eval(expr)
-
         if not items:
             return {}
 
