@@ -51,9 +51,16 @@ class sos_JavaScript:
 
     def get_vars(self, names):
         for name in names:
-            self.sos_kernel.run_cell(
-                '{} = {}'.format(name, _JS_repr(env.sos_dict[name])), True,
-                False)
+            # use get_response instead of run_cell because
+            # this particular kernel send out last assigned value
+            msgs = self.sos_kernel.get_response(
+                '{} = {}'.format(name, _JS_repr(env.sos_dict[name])),
+                ('stream',),
+                name=('stderr',))
+            if msgs:
+                for msg in msgs:
+                    if 'text' in msg[1]:
+                        sos.sos_kernel.warn(msg[1]['text'])
 
     def put_vars(self, items, to_kernel=None):
         # first let us get all variables with names starting with sos
