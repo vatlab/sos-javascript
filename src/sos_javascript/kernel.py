@@ -69,9 +69,12 @@ class sos_JavaScript:
 
         py_repr = 'JSON.stringify({{ {} }})'.format(','.join(
             '"{0}":{0}'.format(x) for x in items))
-        response = self.sos_kernel.get_response(py_repr,
-                                                ('execute_result'))[0][1]
-        expr = response['data']['text/plain']
+
+        expr = ''
+        for response in self.sos_kernel.get_response(py_repr,
+                                                ('execute_result')):
+            expr += response[1]['data']['text/plain']
+
         try:
             return json.loads(eval(expr))
         except Exception as e:
