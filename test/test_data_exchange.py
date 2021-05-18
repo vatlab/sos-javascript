@@ -86,6 +86,101 @@ class TestDataExchange(NotebookTest):
         #
         assert '[1.4, 20]' == self.put_to_SoS(notebook, '[1.4, 20]')
 
+    def test_get_logic_array(self, notebook):
+        output = self.get_from_SoS(notebook, '[True, False, True]')
+        assert '[true,false,true]' == output.replace(' ', '')
+
+    def test_put_logic_array(self, notebook):
+        # Note that single element numeric array is treated as single value
+        output = self.put_to_SoS(notebook,'[true,false,true]')
+        assert '[True,False,True]' == output.replace(' ', '')
+
+    def test_get_char(self, notebook):
+        assert "'a'" == self.get_from_SoS(notebook, '"a"')
+
+    def test_put_char(self, notebook):
+        assert "'a'" == self.put_to_SoS(notebook, '"a"')
+
+    def test_get_char_array(self, notebook):
+        output = self.get_from_SoS(notebook, "['a','b','c']")
+        assert "'a'" in output
+    
+    def test_put_char_array(self, notebook):
+        output = self.put_to_SoS(notebook, "['a','b','c']")
+        output = output.replace(" ", "")
+        assert output == "['a','b','c']"
+
+    def test_get_str(self, notebook):
+        assert "'ab c d'" == self.get_from_SoS(notebook, "'ab c d'")
+        assert "'ab\\td'" == self.get_from_SoS(notebook, "'ab\td'")
+
+    def test_put_str(self, notebook):
+        assert "'ab c d'" == self.put_to_SoS(notebook, '"ab c d"')
+        assert "'ab\\td'" == self.put_to_SoS(notebook, '"ab\td"')
+    
+    def test_get_list(self, notebook):
+        output = self.get_from_SoS(notebook, "[1, 2, '3']")
+        output = output.replace(" ", "")
+        assert output == "[1,2,'3']"
+
+    def test_put_list(self, notebook):
+        output = self.put_to_SoS(notebook, "[1, 2, '3']")
+        output = output.replace(" ", "")
+        assert output == "[1,2,'3']"
+    
+    def test_get_dict(self, notebook):
+        output = self.get_from_SoS(notebook, "dict(a=1, b=2, c='3')")
+        output = output.replace(" ", "")
+        assert "{a:1,b:2,c:'3'}" == output
+        assert 'a:1' in output
+
+    def test_put_dict(self, notebook):
+        output = self.put_to_SoS(notebook, "{a:1,b:2,c:'3'}")
+        output = output.replace(" ", "")
+        assert "{'a':1,'b':2,'c':'3'}" == output
+        assert "'b':2" in output
+
+    def test_get_set(self, notebook):
+        output = self.get_from_SoS(notebook, "{1,2,'3'}")
+        output = output.replace(" ", "")
+        assert output == "[1,2,'3']"
+
+    # def test_put_set(self, notebook):
+    #     output = self.put_to_SoS(notebook, "{1, 2, '3'}")
+    #     assert '2' in output
+    #     assert "'3'" in output
+
+    def test_get_mat(self, notebook):
+        output = self.get_from_SoS(notebook, "[[1, 4, 5], [-5, 8, 9]]")
+        output = output.replace(" ", "")
+        assert output == "[[1,4,5],[-5,8,9]]"
+
+    def test_put_mat(self, notebook):
+        output = self.put_to_SoS(notebook, "[[1, 4, 5], [-5, 8, 9]]")
+        output = output.replace(" ", "")
+        assert output == "[[1,4,5],[-5,8,9]]"
+    
+    def test_get_named_list(self, notebook):
+        output = self.get_from_SoS(notebook, "{'a':1,'b':2,'c':3}")
+        output = output.replace(" ", "")
+        assert output == "{a:1,b:2,c:3}"
+
+    def test_put_named_list(self, notebook):
+        output = self.put_to_SoS(notebook, "{'a':1,'b':2,'c':3}")
+        output = output.replace(" ", "")
+        assert output == "{'a':1,'b':2,'c':3}"
+    
+    def test_get_recursive_var(self, notebook):
+        output = self.get_from_SoS(notebook, "{'a': {'b': 123}, 'c': True}")
+        output = output.replace(" ", "")
+        assert output == '{a:{b:123},c:true}'
+
+    def test_put_recursive_var(self, notebook):
+        output = self.put_to_SoS(notebook, "{'a': {'b': 123}, 'c': true}")
+        output = output.replace(" ", "")
+        assert output == "{'a':{'b':123},'c':True}"
+        assert "{'b':123}" in output
+
     # def test_get_num_colarray(self, notebook):
     #     output = self.get_from_SoS(notebook, 'numpy.array([[11], [22], [33]])')
     #     assert '11' in output and '22' in output and '33' in output
@@ -138,22 +233,6 @@ class TestDataExchange(NotebookTest):
     #     output = self.put_to_SoS(notebook, '[88, 2200]')
     #     assert 'array' in output and '88' in output and '2200' in output
 
-    # def test_get_logic_array(self, notebook):
-    #     output = self.get_from_SoS(notebook, '[True, False, True]')
-    #     assert 'Array' in output and 'Bool' in output
-
-    # def test_put_logic_array(self, notebook):
-    #     # Note that single element numeric array is treated as single value
-    #     assert '[True, False, True]' == self.put_to_SoS(notebook,
-    #                                                     '[true, false, true]')
-
-    # def test_get_str(self, notebook):
-    #     assert '"ab c d"' == self.get_from_SoS(notebook, "'ab c d'")
-    #     assert '"ab\\td"' == self.get_from_SoS(notebook, r"'ab\td'")
-
-    # def test_put_str(self, notebook):
-    #     assert "'ab c d'" == self.put_to_SoS(notebook, '"ab c d"')
-    #     assert "'ab\\td'" == self.put_to_SoS(notebook, '"ab\td"')
 
     # def test_get_mixed_list(self, notebook):
     #     output = self.get_from_SoS(notebook, '[1.4, True, "asd"]')
