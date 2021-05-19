@@ -67,16 +67,16 @@ class sos_JavaScript:
         if not items:
             return {}
 
-        py_repr = 'JSON.stringify({{ {} }})'.format(','.join(
-            '"{0}":{0}'.format(x) for x in items))
+        py_repr = 'process.stdout.write(JSON.stringify({{ {} }}))'.format(
+            ','.join('"{0}":{0}'.format(x) for x in items))
 
         expr = ''
-        for response in self.sos_kernel.get_response(py_repr,
-                                                ('execute_result')):
-            expr += response[1]['data']['text/plain']
+        for response in self.sos_kernel.get_response(
+                py_repr, ('stream',), name=('stdout',)):
+            expr += response[1]['text']
 
         try:
-            return json.loads(eval(expr))
+            return json.loads(expr)
         except Exception as e:
             self.sos_kernel.warn(
                 'Failed to convert {} to Python object: {}'.format(expr, e))

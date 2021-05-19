@@ -85,6 +85,9 @@ class TestDataExchange(NotebookTest):
         assert '[99, 200]' == self.put_to_SoS(notebook, '[99, 200]')
         #
         assert '[1.4, 20]' == self.put_to_SoS(notebook, '[1.4, 20]')
+        #
+        long_array = repr(list(range(2220)))
+        assert long_array == self.put_to_SoS(notebook, long_array)
 
     def test_get_logic_array(self, notebook):
         output = self.get_from_SoS(notebook, '[True, False, True]')
@@ -104,7 +107,7 @@ class TestDataExchange(NotebookTest):
     def test_get_char_array(self, notebook):
         output = self.get_from_SoS(notebook, "['a','b','c']")
         assert "'a'" in output
-    
+
     def test_put_char_array(self, notebook):
         output = self.put_to_SoS(notebook, "['a','b','c']")
         output = output.replace(" ", "")
@@ -117,7 +120,7 @@ class TestDataExchange(NotebookTest):
     def test_put_str(self, notebook):
         assert "'ab c d'" == self.put_to_SoS(notebook, '"ab c d"')
         assert "'ab\\td'" == self.put_to_SoS(notebook, '"ab\td"')
-    
+
     def test_get_list(self, notebook):
         output = self.get_from_SoS(notebook, "[1, 2, '3']")
         output = output.replace(" ", "")
@@ -127,7 +130,7 @@ class TestDataExchange(NotebookTest):
         output = self.put_to_SoS(notebook, "[1, 2, '3']")
         output = output.replace(" ", "")
         assert output == "[1,2,'3']"
-    
+
     def test_get_dict(self, notebook):
         output = self.get_from_SoS(notebook, "dict(a=1, b=2, c='3')")
         output = output.replace(" ", "")
@@ -159,7 +162,7 @@ class TestDataExchange(NotebookTest):
         output = self.put_to_SoS(notebook, "[[1, 4, 5], [-5, 8, 9]]")
         output = output.replace(" ", "")
         assert output == "[[1,4,5],[-5,8,9]]"
-    
+
     def test_get_named_list(self, notebook):
         output = self.get_from_SoS(notebook, "{'a':1,'b':2,'c':3}")
         output = output.replace(" ", "")
@@ -169,7 +172,7 @@ class TestDataExchange(NotebookTest):
         output = self.put_to_SoS(notebook, "{'a':1,'b':2,'c':3}")
         output = output.replace(" ", "")
         assert output == "{'a':1,'b':2,'c':3}"
-    
+
     def test_get_recursive_var(self, notebook):
         output = self.get_from_SoS(notebook, "{'a': {'b': 123}, 'c': True}")
         output = output.replace(" ", "")
